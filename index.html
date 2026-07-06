@@ -319,7 +319,7 @@ function renderFicha(nombre) {
   }
 
   // Historial reciente
-  const recientes = [...c.compras].sort((a,b) => b.periodo - a.periodo).slice(0,8);
+  const recientes = [...c.compras].sort((a,b) => b.periodo - a.periodo);
 
   document.getElementById('ficha-cliente').innerHTML = `
     <div class="card">
@@ -359,16 +359,28 @@ function renderFicha(nombre) {
     </div>` : ''}
 
     <div class="card">
-      <div class="card-title">🕐 Últimas compras</div>
-      ${recientes.map(v =>
-        `<div class="historial-item">
-          <div>
-            <div class="historial-producto">${v.producto}</div>
-            <span class="historial-cat">${v.categoria}</span>
-          </div>
-          <div class="historial-meta">${fmtPeriodo(parseInt(v.periodo))}</div>
-        </div>`
-      ).join('')}
+      <div class="card-title">🕐 Historial completo (${c.compras.length} productos)</div>
+      ${(() => {
+        const porPeriodo = {};
+        recientes.forEach(v => {
+          const k = v.periodo;
+          if (!porPeriodo[k]) porPeriodo[k] = [];
+          porPeriodo[k].push(v);
+        });
+        return Object.entries(porPeriodo).sort((a,b) => b[0]-a[0]).map(([periodo, items]) => `
+          <div style="margin-bottom:10px">
+            <div style="font-size:11px;font-weight:600;color:var(--text3);padding:4px 0;border-bottom:1px solid var(--border);margin-bottom:4px">
+              📅 ${fmtPeriodo(parseInt(periodo))}
+            </div>
+            ${items.map(v => `
+              <div class="historial-item">
+                <div>
+                  <div class="historial-producto">${v.producto}</div>
+                  <span class="historial-cat">${v.categoria}</span>
+                </div>
+              </div>`).join('')}
+          </div>`).join('');
+      })()}
     </div>
   `;
 }
