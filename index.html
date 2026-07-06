@@ -1,8 +1,87 @@
 <!DOCTYPE html>
-<html>
-<head><title>Test</title></head>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Conexión</title>
+  <style>
+    body { font-family: Arial; background: #1a1a1a; color: #fff; padding: 2rem; text-align: center; }
+    .card { background: #222; border: 1px solid #333; border-radius: 8px; padding: 2rem; max-width: 600px; margin: 0 auto; }
+    button { background: #2a5a3a; border: 1px solid #3a7a4a; color: #fff; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; margin: 10px; }
+    button:hover { background: #3a7a4a; }
+    .status { margin-top: 20px; font-size: 12px; padding: 10px; border-radius: 4px; }
+    .ok { background: #2a5a3a; color: #6f8; }
+    .err { background: #5a2a2a; color: #f88; }
+    .loading { background: #333; color: #aaa; }
+    #result { margin-top: 20px; text-align: left; background: #333; padding: 10px; border-radius: 4px; font-size: 11px; font-family: monospace; white-space: pre-wrap; word-break: break-all; max-height: 300px; overflow-y: auto; }
+  </style>
+</head>
 <body>
-<h1>Conexion funcionando</h1>
-<button onclick="alert('Hola')">Click me</button>
+
+<div class="card">
+  <h1>🔗 Test de Conexión</h1>
+  <p>GitHub ↔ Apps Script ↔ Google Sheets</p>
+  
+  <button onclick="testLectura()">Leer datos de Sheets</button>
+  <button onclick="testEscritura()">Escribir datos a Sheets</button>
+  
+  <div id="status" class="status loading">En espera...</div>
+  <div id="result"></div>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwzVnl-yRqwW9OD6I-BG9G1j-LsYdZ9nuNwr8XoN8NQM6YtJMRPNbvyC8Rf9SMqUeE/exec';
+
+function mostrarStatus(msg, tipo) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + tipo;
+}
+
+function mostrarResultado(obj) {
+  document.getElementById('result').textContent = JSON.stringify(obj, null, 2);
+}
+
+async function testLectura() {
+  mostrarStatus('Leyendo...', 'loading');
+  try {
+    const response = await fetch(APPS_SCRIPT_URL + '?action=read');
+    const data = await response.json();
+    mostrarResultado(data);
+    mostrarStatus('✓ Conexión OK - Datos leídos', 'ok');
+  } catch (err) {
+    mostrarResultado({ error: err.message });
+    mostrarStatus('✗ Error: ' + err.message, 'err');
+  }
+}
+
+async function testEscritura() {
+  mostrarStatus('Escribiendo...', 'loading');
+  try {
+    const testData = {
+      action: 'write',
+      clientes: [
+        { id: '1', nombre: 'Test Cliente', email: 'test@example.com', fecha: new Date().toLocaleDateString() }
+      ]
+    };
+    
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(testData)
+    });
+    
+    mostrarResultado(testData);
+    mostrarStatus('✓ Datos enviados - Verifica en Google Sheets celda B1', 'ok');
+  } catch (err) {
+    mostrarResultado({ error: err.message });
+    mostrarStatus('✗ Error: ' + err.message, 'err');
+  }
+}
+
+mostrarStatus('Listo para testear', 'ok');
+</script>
+
 </body>
 </html>
