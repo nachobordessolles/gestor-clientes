@@ -7,140 +7,142 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg: #0f1117; --bg2: #1a1d27; --bg3: #222536; --bg4: #2a2f45;
-      --text: #fff; --text2: #bbc; --text3: #778;
-      --border: #2a2f45; --border2: #3a4060;
-      --green: #4ade80; --red: #f87171; --yellow: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
-      --green-bg: #052e16; --red-bg: #2d0a0a; --yellow-bg: #2d1f00;
+      --bg:#0f1117;--bg2:#1a1d27;--bg3:#222536;--bg4:#2a2f45;
+      --text:#fff;--text2:#bbc;--text3:#778;
+      --border:#2a2f45;--border2:#3a4060;
+      --green:#4ade80;--red:#f87171;--yellow:#fbbf24;--blue:#60a5fa;--purple:#a78bfa;
+      --green-bg:#052e16;--red-bg:#2d0a0a;--yellow-bg:#2d1f00;--blue-bg:#0a1628;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-    /* Header */
-    .header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
-    .header h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
-    .header-right { display: flex; align-items: center; gap: 12px; }
-    .campaña-badge { font-size: 11px; color: var(--text3); background: var(--bg3); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border2); }
-    .sync-btn { font-size: 11px; color: var(--green); background: var(--green-bg); border: 1px solid var(--green); padding: 5px 12px; border-radius: 6px; cursor: pointer; }
-    .sync-btn:hover { opacity: 0.8; }
-
-    /* Nav */
-    .nav { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; gap: 0; }
-    .nav-btn { padding: 12px 16px; font-size: 13px; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; transition: all 0.15s; }
-    .nav-btn.active { color: var(--green); border-bottom-color: var(--green); }
-    .nav-btn:hover { color: var(--text2); }
-
-    /* Content */
-    .content { padding: 24px; max-width: 1200px; margin: 0 auto; }
-    .screen { display: none; }
-    .screen.active { display: block; }
-
-    /* Grid */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 16px; }
-
-    /* Cards */
-    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-    .card-sm { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-    .card-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
-    .card-full { grid-column: 1 / -1; }
-
-    /* KPI */
-    .kpi-num { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; }
-    .kpi-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
-    .kpi-sub { font-size: 11px; margin-top: 6px; }
-    .kpi-green { color: var(--green); }
-    .kpi-red { color: var(--red); }
-    .kpi-yellow { color: var(--yellow); }
-
-    /* Charts */
-    .chart-wrap { position: relative; height: 240px; }
-    .chart-wrap-lg { position: relative; height: 300px; }
-
-    /* Barras custom */
-    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-    .bar-label { font-size: 12px; color: var(--text2); width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
-    .bar-track { flex: 1; height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 3px; }
-    .bar-val { font-size: 11px; color: var(--text3); width: 30px; text-align: right; flex-shrink: 0; }
-
-    /* Estado badges */
-    .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; }
-    .badge-activo { background: var(--green-bg); color: var(--green); }
-    .badge-contactar { background: var(--yellow-bg); color: var(--yellow); }
-    .badge-inactivo { background: var(--red-bg); color: var(--red); }
-
-    /* Tabla */
-    table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    th { text-align: left; padding: 8px 10px; color: var(--text3); font-weight: 500; border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
-    td { padding: 9px 10px; border-bottom: 1px solid var(--border); color: var(--text2); }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--bg3); }
-    td.strong { color: var(--text); font-weight: 500; }
-
-    /* Loading */
-    .loading { display: flex; align-items: center; justify-content: center; height: 300px; flex-direction: column; gap: 12px; }
-    .spinner { width: 32px; height: 32px; border: 3px solid var(--border2); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text { font-size: 13px; color: var(--text3); }
-
-    /* Buscador */
-    .search-wrap { position: relative; margin-bottom: 20px; }
-    .search-input { width: 100%; padding: 12px 16px; background: var(--bg2); border: 1px solid var(--border2); color: var(--text); border-radius: 10px; font-size: 14px; outline: none; }
-    .search-input:focus { border-color: var(--green); }
-    .search-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg2); border: 1px solid var(--border2); border-radius: 8px; z-index: 100; max-height: 220px; overflow-y: auto; margin-top: 4px; display: none; }
-    .search-opt { padding: 10px 16px; cursor: pointer; font-size: 13px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
-    .search-opt:hover { background: var(--bg3); }
-    .search-opt:last-child { border-bottom: none; }
-
-    /* Ficha */
-    .ficha-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-    .ficha-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--bg4); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-    .ficha-nombre { font-size: 20px; font-weight: 700; }
-    .ficha-estado { font-size: 12px; margin-top: 4px; }
-    .stat-mini { background: var(--bg3); border-radius: 8px; padding: 12px; text-align: center; }
-    .stat-mini-num { font-size: 22px; font-weight: 700; color: var(--green); }
-    .stat-mini-label { font-size: 10px; color: var(--text3); margin-top: 2px; }
-    .alerta { padding: 8px 12px; border-radius: 6px; font-size: 12px; margin-bottom: 6px; }
-    .alerta.verde { background: var(--green-bg); color: var(--green); }
-    .alerta.roja { background: var(--red-bg); color: var(--red); }
-    .alerta.amarilla { background: var(--yellow-bg); color: var(--yellow); }
-    .periodo-header { font-size: 11px; font-weight: 600; color: var(--text3); padding: 6px 0 4px; border-bottom: 1px solid var(--border); margin-bottom: 4px; margin-top: 10px; }
-    .prod-item { font-size: 12px; color: var(--text2); padding: 4px 0; display: flex; justify-content: space-between; }
-    .prod-cat { font-size: 10px; background: var(--bg4); color: var(--text3); padding: 1px 6px; border-radius: 3px; }
-
-    /* Toast */
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg3); border: 1px solid var(--green); color: var(--green); padding: 10px 20px; border-radius: 8px; font-size: 13px; z-index: 9999; display: none; white-space: nowrap; }
-
-    @media (max-width: 700px) {
-      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
-      .content { padding: 12px; }
-    }
-    @media (max-width: 480px) {
-      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+    .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+    .header h1{font-size:16px;font-weight:600;}
+    .header-right{display:flex;align-items:center;gap:10px;}
+    .campaña-badge{font-size:11px;color:var(--text3);background:var(--bg3);padding:4px 10px;border-radius:20px;border:1px solid var(--border2);cursor:pointer;}
+    .campaña-badge:hover{border-color:var(--green);color:var(--green);}
+    .nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;overflow-x:auto;}
+    .nav-btn{padding:12px 14px;font-size:12px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;transition:all .15s;white-space:nowrap;}
+    .nav-btn.active{color:var(--green);border-bottom-color:var(--green);}
+    .nav-btn:hover{color:var(--text2);}
+    .content{padding:20px;max-width:1200px;margin:0 auto;}
+    .screen{display:none;}
+    .screen.active{display:block;}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;}
+    .card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+    .card-sm{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+    .card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
+    .kpi-num{font-size:32px;font-weight:700;letter-spacing:-.03em;}
+    .kpi-label{font-size:12px;color:var(--text3);margin-top:4px;}
+    .kpi-green{color:var(--green);}
+    .kpi-red{color:var(--red);}
+    .kpi-yellow{color:var(--yellow);}
+    .kpi-blue{color:var(--blue);}
+    .chart-wrap{position:relative;height:240px;}
+    .chart-wrap-lg{position:relative;height:300px;}
+    .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+    .bar-label{font-size:12px;color:var(--text2);width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;}
+    .bar-track{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:3px;}
+    .bar-val{font-size:11px;color:var(--text3);width:30px;text-align:right;flex-shrink:0;}
+    .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;}
+    .badge-activo{background:var(--green-bg);color:var(--green);}
+    .badge-contactar{background:var(--yellow-bg);color:var(--yellow);}
+    .badge-inactivo{background:var(--red-bg);color:var(--red);}
+    .badge-riesgo{background:#1a0a2a;color:var(--purple);}
+    table{width:100%;border-collapse:collapse;font-size:12px;}
+    th{text-align:left;padding:8px 10px;color:var(--text3);font-weight:500;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
+    td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text2);}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:var(--bg3);cursor:pointer;}
+    td.strong{color:var(--text);font-weight:500;}
+    .loading{display:flex;align-items:center;justify-content:center;height:300px;flex-direction:column;gap:12px;}
+    .spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .loading-text{font-size:13px;color:var(--text3);}
+    .search-wrap{position:relative;margin-bottom:20px;}
+    .search-input{width:100%;padding:12px 16px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);border-radius:10px;font-size:14px;outline:none;}
+    .search-input:focus{border-color:var(--green);}
+    .search-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;z-index:100;max-height:220px;overflow-y:auto;margin-top:4px;display:none;}
+    .search-opt{padding:10px 16px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;}
+    .search-opt:hover{background:var(--bg3);}
+    .ficha-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+    .ficha-avatar{width:52px;height:52px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+    .ficha-nombre{font-size:20px;font-weight:700;}
+    .ficha-estado{font-size:12px;margin-top:4px;}
+    .stat-mini{background:var(--bg3);border-radius:8px;padding:12px;text-align:center;}
+    .stat-mini-num{font-size:22px;font-weight:700;color:var(--green);}
+    .stat-mini-label{font-size:10px;color:var(--text3);margin-top:2px;}
+    .alerta{padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:6px;}
+    .alerta.verde{background:var(--green-bg);color:var(--green);}
+    .alerta.roja{background:var(--red-bg);color:var(--red);}
+    .alerta.amarilla{background:var(--yellow-bg);color:var(--yellow);}
+    .alerta.purple{background:#1a0a2a;color:var(--purple);}
+    .periodo-header{font-size:11px;font-weight:600;color:var(--text3);padding:6px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px;margin-top:10px;}
+    .prod-item{font-size:12px;color:var(--text2);padding:4px 0;display:flex;justify-content:space-between;align-items:center;}
+    .prod-cat{font-size:10px;background:var(--bg4);color:var(--text3);padding:1px 6px;border-radius:3px;}
+    .btn{padding:8px 16px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;border:1px solid;transition:all .15s;}
+    .btn-green{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+    .btn-green:hover{background:#0a4a20;}
+    .btn-red{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+    .btn-blue{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);}
+    .btn-gray{background:var(--bg3);border-color:var(--border2);color:var(--text2);}
+    .form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+    .form-group label{font-size:11px;color:var(--text3);}
+    input,select,textarea{background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:8px 10px;border-radius:6px;font-size:13px;width:100%;outline:none;}
+    input:focus,select:focus,textarea:focus{border-color:var(--green);}
+    textarea{resize:vertical;min-height:80px;}
+    .seguimiento-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+    .seguimiento-item:last-child{border-bottom:none;}
+    .seguimiento-check{width:18px;height:18px;cursor:pointer;accent-color:var(--green);flex-shrink:0;}
+    .seguimiento-info{flex:1;}
+    .seguimiento-nombre{font-size:13px;font-weight:500;}
+    .seguimiento-nota{font-size:11px;color:var(--text3);margin-top:2px;}
+    .heat-table{width:100%;border-collapse:collapse;font-size:11px;}
+    .heat-table th{padding:6px 8px;color:var(--text3);border-bottom:1px solid var(--border);text-align:center;}
+    .heat-table td{padding:5px 8px;text-align:center;border-radius:4px;}
+    .heat-0{background:var(--bg3);color:var(--text3);}
+    .heat-1{background:#052e16;color:#4ade80;}
+    .heat-2{background:#0a4a20;color:#6ee7a0;}
+    .heat-3{background:#166534;color:#86efac;}
+    .heat-4{background:#15803d;color:#bbf7d0;}
+    .modal{position:fixed;inset:0;background:#0008;z-index:1000;display:none;align-items:center;justify-content:center;}
+    .modal.open{display:flex;}
+    .modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:24px;width:90%;max-width:460px;}
+    .modal-title{font-size:15px;font-weight:600;margin-bottom:16px;}
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--green);color:var(--green);padding:10px 20px;border-radius:8px;font-size:13px;z-index:9999;display:none;white-space:nowrap;}
+    .retención-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;}
+    .ret-box{background:var(--bg3);border-radius:6px;padding:10px;text-align:center;}
+    .ret-num{font-size:18px;font-weight:700;}
+    .ret-label{font-size:10px;color:var(--text3);margin-top:2px;}
+    @media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr;}.content{padding:12px;}}
+    @media(max-width:480px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>📋 CRM Dashboard</h1>
+  <h1>📋 CRM</h1>
   <div class="header-right">
-    <span class="campaña-badge" id="badge-campaña">Cargando...</span>
-    <button class="sync-btn" onclick="cargarDatos()">↻ Sincronizar</button>
+    <span class="campaña-badge" id="badge-campaña" onclick="abrirConfigCampaña()" title="Click para cambiar campaña">⚙️ Cargando...</span>
+    <button class="btn btn-green" onclick="cargarDatos()">↻ Sync</button>
   </div>
 </div>
 
 <div class="nav">
-  <button class="nav-btn active" onclick="setScreen('dashboard', this)">📊 Dashboard</button>
-  <button class="nav-btn" onclick="setScreen('clientes', this)">👥 Clientes</button>
-  <button class="nav-btn" onclick="setScreen('buscar', this)">🔍 Buscar</button>
+  <button class="nav-btn active" onclick="setScreen('dashboard',this)">📊 Dashboard</button>
+  <button class="nav-btn" onclick="setScreen('clientes',this)">👥 Clientes</button>
+  <button class="nav-btn" onclick="setScreen('buscar',this)">🔍 Buscar</button>
+  <button class="nav-btn" onclick="setScreen('venta',this)">➕ Nueva venta</button>
+  <button class="nav-btn" onclick="setScreen('riesgo',this)">⚠️ En riesgo</button>
+  <button class="nav-btn" onclick="setScreen('seguimiento',this)">📌 Seguimiento</button>
+  <button class="nav-btn" onclick="setScreen('heat',this)">🗺️ Mapa calor</button>
+  <button class="nav-btn" onclick="setScreen('retencion',this)">🔄 Retención</button>
 </div>
 
 <div class="content">
 
-  <!-- LOADING -->
   <div id="loading" class="loading">
     <div class="spinner"></div>
     <div class="loading-text">Cargando datos desde Google Sheets...</div>
@@ -149,72 +151,45 @@
   <!-- DASHBOARD -->
   <div id="screen-dashboard" class="screen">
     <div class="grid-4">
-      <div class="card-sm">
-        <div class="kpi-label">Total clientes</div>
-        <div class="kpi-num" id="kpi-total">—</div>
-      </div>
-      <div class="card-sm">
-        <div class="kpi-label">🟢 Activos</div>
-        <div class="kpi-num kpi-green" id="kpi-activos">—</div>
-      </div>
-      <div class="card-sm">
-        <div class="kpi-label">🟡 Contactar</div>
-        <div class="kpi-num kpi-yellow" id="kpi-contactar">—</div>
-      </div>
-      <div class="card-sm">
-        <div class="kpi-label">🔴 Inactivos</div>
-        <div class="kpi-num kpi-red" id="kpi-inactivos">—</div>
-      </div>
+      <div class="card-sm"><div class="kpi-label">Total clientes</div><div class="kpi-num" id="kpi-total">—</div></div>
+      <div class="card-sm"><div class="kpi-label">🟢 Activos</div><div class="kpi-num kpi-green" id="kpi-activos">—</div></div>
+      <div class="card-sm"><div class="kpi-label">🟡 Contactar</div><div class="kpi-num kpi-yellow" id="kpi-contactar">—</div></div>
+      <div class="card-sm"><div class="kpi-label">🔴 Inactivos</div><div class="kpi-num kpi-red" id="kpi-inactivos">—</div></div>
     </div>
-
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-title">Ventas por campaña</div>
-        <div class="chart-wrap"><canvas id="chart-ventas-campaña"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Estado de clientes</div>
-        <div class="chart-wrap"><canvas id="chart-estados"></canvas></div>
-      </div>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="card-sm"><div class="kpi-label">⚠️ En riesgo</div><div class="kpi-num" style="color:var(--purple)" id="kpi-riesgo">—</div></div>
+      <div class="card-sm"><div class="kpi-label">📌 Seguimiento</div><div class="kpi-num kpi-blue" id="kpi-seguimiento">—</div></div>
+      <div class="card-sm"><div class="kpi-label">📦 Total ventas</div><div class="kpi-num" id="kpi-ventas">—</div></div>
+      <div class="card-sm"><div class="kpi-label">🔄 Retención</div><div class="kpi-num kpi-green" id="kpi-retencion">—</div></div>
     </div>
-
     <div class="grid-2">
-      <div class="card">
-        <div class="card-title">Categorías más vendidas</div>
-        <div id="bars-categorias"></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Clientes nuevos por campaña</div>
-        <div class="chart-wrap"><canvas id="chart-nuevos"></canvas></div>
-      </div>
+      <div class="card"><div class="card-title">Ventas por campaña</div><div class="chart-wrap"><canvas id="chart-ventas-campaña"></canvas></div></div>
+      <div class="card"><div class="card-title">Estado de clientes</div><div class="chart-wrap"><canvas id="chart-estados"></canvas></div></div>
     </div>
-
     <div class="grid-2">
-      <div class="card">
-        <div class="card-title">Top 10 clientes</div>
-        <table id="tabla-top-clientes">
-          <thead><tr><th>#</th><th>Cliente</th><th>Productos</th><th>Estado</th></tr></thead>
-          <tbody></tbody>
-        </table>
+      <div class="card"><div class="card-title">Categorías más vendidas</div><div id="bars-categorias"></div></div>
+      <div class="card"><div class="card-title">Clientes nuevos por campaña</div><div class="chart-wrap"><canvas id="chart-nuevos"></canvas></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Top 10 clientes</div>
+        <table id="tabla-top"><thead><tr><th>#</th><th>Cliente</th><th>Productos</th><th>Estado</th></tr></thead><tbody></tbody></table>
       </div>
-      <div class="card">
-        <div class="card-title">Productos más vendidos</div>
-        <div id="bars-productos"></div>
-      </div>
+      <div class="card"><div class="card-title">Productos más vendidos</div><div id="bars-productos"></div></div>
     </div>
   </div>
 
   <!-- CLIENTES -->
   <div id="screen-clientes" class="screen">
-    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-      <button class="sync-btn" style="border-color:var(--border2);color:var(--text2);background:var(--bg3)" onclick="filtrarClientes('todos',this)">Todos</button>
-      <button class="sync-btn" onclick="filtrarClientes('activo',this)">🟢 Activos</button>
-      <button class="sync-btn" style="border-color:var(--yellow);color:var(--yellow);background:var(--yellow-bg)" onclick="filtrarClientes('contactar',this)">🟡 Contactar</button>
-      <button class="sync-btn" style="border-color:var(--red);color:var(--red);background:var(--red-bg)" onclick="filtrarClientes('inactivo',this)">🔴 Inactivos</button>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+      <button class="btn btn-gray" onclick="filtrarClientes('todos',this)">Todos</button>
+      <button class="btn btn-green" onclick="filtrarClientes('activo',this)">🟢 Activos</button>
+      <button class="btn" style="background:var(--yellow-bg);border-color:var(--yellow);color:var(--yellow)" onclick="filtrarClientes('contactar',this)">🟡 Contactar</button>
+      <button class="btn btn-red" onclick="filtrarClientes('inactivo',this)">🔴 Inactivos</button>
+      <button class="btn" style="background:#1a0a2a;border-color:var(--purple);color:var(--purple);margin-left:auto" onclick="exportarLista()">⬇ Exportar CSV</button>
     </div>
     <div class="card">
       <table id="tabla-clientes">
-        <thead><tr><th>Cliente</th><th>Productos</th><th>Última compra</th><th>Sin comprar</th><th>Estado</th></tr></thead>
+        <thead><tr><th>Cliente</th><th>Productos</th><th>Última compra</th><th>Sin comprar</th><th>Estado</th><th>Seguimiento</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -229,6 +204,112 @@
     <div id="ficha-contenido"></div>
   </div>
 
+  <!-- NUEVA VENTA -->
+  <div id="screen-venta" class="screen">
+    <div class="card" style="max-width:500px">
+      <div class="card-title">Registrar nueva venta</div>
+      <div class="form-group">
+        <label>Cliente</label>
+        <input type="text" id="v-cliente" list="dl-clientes" placeholder="Nombre del cliente">
+        <datalist id="dl-clientes"></datalist>
+      </div>
+      <div class="form-group">
+        <label>Producto</label>
+        <input type="text" id="v-producto" list="dl-productos" placeholder="Nombre del producto">
+        <datalist id="dl-productos"></datalist>
+      </div>
+      <div class="form-group">
+        <label>Categoría</label>
+        <input type="text" id="v-categoria" list="dl-categorias" placeholder="Categoría">
+        <datalist id="dl-categorias"></datalist>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <label>Año</label>
+          <input type="number" id="v-año" min="2020" max="2030">
+        </div>
+        <div class="form-group">
+          <label>Campaña</label>
+          <input type="number" id="v-campaña" min="1" max="18">
+        </div>
+      </div>
+      <button class="btn btn-green" style="width:100%;margin-top:4px;padding:10px" onclick="guardarVenta()">✓ Registrar venta</button>
+      <div id="venta-status" style="margin-top:10px;font-size:12px;color:var(--text3)"></div>
+    </div>
+  </div>
+
+  <!-- EN RIESGO -->
+  <div id="screen-riesgo" class="screen">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">⚠️ Clientes en riesgo — llevan 2 campañas sin comprar</div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:16px">Estaban activos y pueden volverse inactivos si no compran esta campaña.</p>
+      <table id="tabla-riesgo">
+        <thead><tr><th>Cliente</th><th>Última compra</th><th>Campañas sin comprar</th><th>Cat. favorita</th><th>Acción</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SEGUIMIENTO -->
+  <div id="screen-seguimiento" class="screen">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-size:13px;color:var(--text2)" id="seg-count"></div>
+      <button class="btn btn-gray" onclick="limpiarSeguimiento()">🗑 Limpiar completados</button>
+    </div>
+    <div class="card" id="lista-seguimiento">
+      <div style="color:var(--text3);font-size:13px;text-align:center;padding:40px">
+        No hay clientes en seguimiento.<br>
+        <small>Agregá desde la ficha de cada cliente o desde "En riesgo".</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAPA DE CALOR -->
+  <div id="screen-heat" class="screen">
+    <div class="card">
+      <div class="card-title">🗺️ Ventas por categoría × campaña</div>
+      <div style="overflow-x:auto"><table class="heat-table" id="heat-table"></table></div>
+    </div>
+  </div>
+
+  <!-- RETENCIÓN -->
+  <div id="screen-retencion" class="screen">
+    <div class="grid-3" id="retencion-kpis"></div>
+    <div class="card">
+      <div class="card-title">🔄 Retención por campaña — % clientes que volvieron a comprar</div>
+      <div class="chart-wrap-lg"><canvas id="chart-retencion"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Comparativa campaña actual vs anterior</div>
+      <div id="comparativa-detalle"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL CONFIG CAMPAÑA -->
+<div class="modal" id="modal-config">
+  <div class="modal-box">
+    <div class="modal-title">⚙️ Configurar campaña actual</div>
+    <div class="form-group"><label>Año</label><input type="number" id="cfg-año" min="2020" max="2030"></div>
+    <div class="form-group"><label>Número de campaña (1-18)</label><input type="number" id="cfg-campaña" min="1" max="18"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-green" style="flex:1" onclick="guardarConfig()">✓ Guardar</button>
+      <button class="btn btn-gray" onclick="cerrarModal('modal-config')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOTA CLIENTE -->
+<div class="modal" id="modal-nota">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-nota-titulo">Nota para cliente</div>
+    <div class="form-group"><label>Nota / observación</label><textarea id="nota-texto" placeholder="Ej: Prefiere perfumes, contactar por WhatsApp..."></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-green" style="flex:1" onclick="guardarNota()">✓ Guardar nota</button>
+      <button class="btn btn-gray" onclick="cerrarModal('modal-nota')">Cancelar</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -236,8 +317,12 @@
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqPOgyy729KX9Isa-wm-p84HH0XhKSRASGQsOFeGryj_sD64hpEUh-Bh0GI43i357P/exec';
 
-let DATA = { ventas: [], clientes: [], config: {} };
+let DATA = { ventas: [], clientes: [], config: { añoActual: 2026, campañaActual: 10 } };
 let charts = {};
+let seguimiento = JSON.parse(localStorage.getItem('crm-seguimiento') || '{}'); // {nombre: {checked, nota}}
+let notas = JSON.parse(localStorage.getItem('crm-notas') || '{}');
+let notaClienteActual = null;
+let filtroClientesActual = 'todos';
 
 // ── Cargar datos ──────────────────────────────────────────────────────
 async function cargarDatos() {
@@ -247,254 +332,247 @@ async function cargarDatos() {
     const r = await fetch(APPS_SCRIPT_URL);
     const raw = await r.json();
 
-    // ventas: primera fila = headers
-    const vHeaders = raw.ventas[0];
     DATA.ventas = raw.ventas.slice(1).filter(r => r[0]).map(r => ({
-      cliente: r[0], producto: r[1], categoria: r[2],
+      cliente: String(r[0]).trim(), producto: String(r[1]).trim(), categoria: String(r[2]).trim(),
       año: parseInt(r[3]), campaña: parseInt(r[4]), periodo: parseInt(r[5])
     }));
 
-    // clientes
-    const cHeaders = raw.clientes[0];
     DATA.clientes = raw.clientes.slice(1).filter(r => r[0]).map(r => ({
-      nombre: r[0], primerPeriodo: parseInt(r[1]), ultimoPeriodo: parseInt(r[2]),
-      totalProductos: parseInt(r[3]), campañasSin: parseInt(r[4]), estado: r[5]
+      nombre: String(r[0]).trim(), primerPeriodo: parseInt(r[1]), ultimoPeriodo: parseInt(r[2]),
+      totalProductos: parseInt(r[3]), campañasSin: parseInt(r[4]), estado: String(r[5]).trim()
     }));
 
-    // config
-    DATA.config = { añoActual: raw.config[1][0], campañaActual: raw.config[1][1] };
-
-    document.getElementById('badge-campaña').textContent = `Campaña ${DATA.config.campañaActual} · ${DATA.config.añoActual}`;
-
+    DATA.config = { añoActual: parseInt(raw.config[1][0]), campañaActual: parseInt(raw.config[1][1]) };
+    actualizarBadge();
+    poblarDataLists();
     renderDashboard();
     renderTablaClientes();
+    renderRiesgo();
+    renderSeguimiento();
+    renderHeatMap();
+    renderRetencion();
     document.getElementById('loading').style.display = 'none';
     document.getElementById('screen-dashboard').style.display = 'block';
     showToast('✓ Datos actualizados');
   } catch(err) {
-    document.getElementById('loading').innerHTML = `<div style="color:var(--red);text-align:center">Error cargando datos<br><small>${err.message}</small><br><br><button class="sync-btn" onclick="cargarDatos()">Reintentar</button></div>`;
+    document.getElementById('loading').innerHTML = `<div style="color:var(--red);text-align:center">Error al cargar<br><small>${err.message}</small><br><br><button class="btn btn-green" onclick="cargarDatos()">Reintentar</button></div>`;
   }
+}
+
+function actualizarBadge() {
+  document.getElementById('badge-campaña').textContent = `⚙️ C${DATA.config.campañaActual} · ${DATA.config.añoActual}`;
+  document.getElementById('v-año').value = DATA.config.añoActual;
+  document.getElementById('v-campaña').value = DATA.config.campañaActual;
+  document.getElementById('cfg-año').value = DATA.config.añoActual;
+  document.getElementById('cfg-campaña').value = DATA.config.campañaActual;
+}
+
+function poblarDataLists() {
+  const clientes = [...new Set(DATA.ventas.map(v => v.cliente))].sort();
+  const prods = [...new Set(DATA.ventas.map(v => v.producto))].sort();
+  const cats = [...new Set(DATA.ventas.map(v => v.categoria))].sort();
+  document.getElementById('dl-clientes').innerHTML = clientes.map(c => `<option value="${c}">`).join('');
+  document.getElementById('dl-productos').innerHTML = prods.map(c => `<option value="${c}">`).join('');
+  document.getElementById('dl-categorias').innerHTML = cats.map(c => `<option value="${c}">`).join('');
 }
 
 // ── Utils ─────────────────────────────────────────────────────────────
 function fmtPeriodo(p) {
   if (!p || isNaN(p)) return '—';
-  return `C${p%100} · ${Math.floor(p/100)}`;
+  return `C${p%100}·${Math.floor(p/100)}`;
 }
+function periodoActual() { return DATA.config.añoActual*100+DATA.config.campañaActual; }
 function campañasEntre(p1, p2) {
-  const a1 = Math.floor(p1/100), c1 = p1%100;
-  const a2 = Math.floor(p2/100), c2 = p2%100;
-  return (a2 - a1) * 18 + (c2 - c1);
+  const a1=Math.floor(p1/100),c1=p1%100,a2=Math.floor(p2/100),c2=p2%100;
+  return (a2-a1)*18+(c2-c1);
 }
-function showToast(msg) {
+function esBadge(estado) {
+  if (!estado) return '';
+  if (estado.includes('Activo')) return 'activo';
+  if (estado.includes('Contactar')) return 'contactar';
+  return 'inactivo';
+}
+function showToast(msg, color) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.style.display = 'block';
+  t.textContent = msg;
+  t.style.borderColor = color||'var(--green)';
+  t.style.color = color||'var(--green)';
+  t.style.display = 'block';
   setTimeout(() => t.style.display = 'none', 3000);
 }
-function destroyChart(id) {
-  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
-}
+function destroyChart(id) { if(charts[id]){charts[id].destroy();delete charts[id];} }
+function cerrarModal(id) { document.getElementById(id).classList.remove('open'); }
+
+const CHART_DEFAULTS = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{display:false}},
+  scales:{
+    x:{ticks:{color:'#778',font:{size:9}},grid:{color:'#2a2f45'}},
+    y:{ticks:{color:'#778'},grid:{color:'#2a2f45'}}
+  }
+};
 
 // ── Dashboard ─────────────────────────────────────────────────────────
 function renderDashboard() {
-  const clientes = DATA.clientes;
-  const ventas = DATA.ventas;
+  const {ventas, clientes} = DATA;
+  const activos = clientes.filter(c=>c.estado&&c.estado.includes('Activo')).length;
+  const contactar = clientes.filter(c=>c.estado&&c.estado.includes('Contactar')).length;
+  const inactivos = clientes.filter(c=>c.estado&&c.estado.includes('Inactivo')).length;
+  const enRiesgo = clientes.filter(c=>c.campañasSin===2).length;
+  const enSeg = Object.keys(seguimiento).filter(k=>!seguimiento[k].checked).length;
 
-  // KPIs
-  const activos = clientes.filter(c => c.estado && c.estado.includes('Activo')).length;
-  const contactar = clientes.filter(c => c.estado && c.estado.includes('Contactar')).length;
-  const inactivos = clientes.filter(c => c.estado && c.estado.includes('Inactivo')).length;
+  // Retención campaña actual
+  const pa = periodoActual();
+  const pPrev = pa%100===1 ? (Math.floor(pa/100)-1)*100+18 : pa-1;
+  const comprActual = new Set(ventas.filter(v=>v.periodo===pa).map(v=>v.cliente));
+  const comprPrev = new Set(ventas.filter(v=>v.periodo===pPrev).map(v=>v.cliente));
+  const retPct = comprPrev.size>0 ? Math.round([...comprPrev].filter(c=>comprActual.has(c)).length/comprPrev.size*100) : 0;
+
   document.getElementById('kpi-total').textContent = clientes.length;
   document.getElementById('kpi-activos').textContent = activos;
   document.getElementById('kpi-contactar').textContent = contactar;
   document.getElementById('kpi-inactivos').textContent = inactivos;
+  document.getElementById('kpi-riesgo').textContent = enRiesgo;
+  document.getElementById('kpi-seguimiento').textContent = enSeg;
+  document.getElementById('kpi-ventas').textContent = ventas.length;
+  document.getElementById('kpi-retencion').textContent = retPct+'%';
 
-  // Chart: ventas por campaña
-  const ventasPorPeriodo = {};
-  ventas.forEach(v => {
-    const k = `C${v.campaña}·${v.año}`;
-    ventasPorPeriodo[k] = (ventasPorPeriodo[k]||0) + 1;
+  // Ventas por campaña
+  const vpc={};
+  ventas.forEach(v=>{const k=`C${v.campaña}·${v.año}`;vpc[k]=(vpc[k]||0)+1;});
+  const periodos=Object.keys(vpc).sort((a,b)=>{
+    const [ca,aa]=a.replace('C','').split('·').map(Number);
+    const [cb,ab]=b.replace('C','').split('·').map(Number);
+    return aa*100+ca-(ab*100+cb);
   });
-  const periodos = Object.keys(ventasPorPeriodo).sort((a,b) => {
-    const [ca, aa] = a.replace('C','').split('·').map(Number);
-    const [cb, ab] = b.replace('C','').split('·').map(Number);
-    return aa*100+ca - (ab*100+cb);
-  });
-
-  destroyChart('ventas-campaña');
-  charts['ventas-campaña'] = new Chart(document.getElementById('chart-ventas-campaña'), {
-    type: 'bar',
-    data: {
-      labels: periodos,
-      datasets: [{ data: periodos.map(k => ventasPorPeriodo[k]), backgroundColor: '#4ade8044', borderColor: '#4ade80', borderWidth: 1.5, borderRadius: 4 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#778', font: { size: 9 } }, grid: { color: '#2a2f45' } }, y: { ticks: { color: '#778' }, grid: { color: '#2a2f45' } } } }
+  destroyChart('vpc');
+  charts['vpc']=new Chart(document.getElementById('chart-ventas-campaña'),{
+    type:'bar',data:{labels:periodos,datasets:[{data:periodos.map(k=>vpc[k]),backgroundColor:'#4ade8044',borderColor:'#4ade80',borderWidth:1.5,borderRadius:4}]},
+    options:CHART_DEFAULTS
   });
 
-  // Chart: estados (doughnut)
-  destroyChart('estados');
-  charts['estados'] = new Chart(document.getElementById('chart-estados'), {
-    type: 'doughnut',
-    data: {
-      labels: ['🟢 Activos', '🟡 Contactar', '🔴 Inactivos'],
-      datasets: [{ data: [activos, contactar, inactivos], backgroundColor: ['#4ade8066','#fbbf2466','#f8717166'], borderColor: ['#4ade80','#fbbf24','#f87171'], borderWidth: 2 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#bbc', font: { size: 11 }, padding: 12 } } }, cutout: '65%' }
+  // Doughnut estados
+  destroyChart('est');
+  charts['est']=new Chart(document.getElementById('chart-estados'),{
+    type:'doughnut',
+    data:{labels:['🟢 Activos','🟡 Contactar','🔴 Inactivos','⚠️ Riesgo'],
+      datasets:[{data:[activos,contactar,inactivos,enRiesgo],backgroundColor:['#4ade8066','#fbbf2466','#f8717166','#a78bfa66'],borderColor:['#4ade80','#fbbf24','#f87171','#a78bfa'],borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#bbc',font:{size:11},padding:12}}},cutout:'65%'}
   });
 
-  // Barras: categorías
-  const catCount = {};
-  ventas.forEach(v => { catCount[v.categoria] = (catCount[v.categoria]||0) + 1; });
-  const topCats = Object.entries(catCount).sort((a,b) => b[1]-a[1]).slice(0,8);
-  const maxCat = topCats[0][1];
-  document.getElementById('bars-categorias').innerHTML = topCats.map(([cat,n]) =>
-    `<div class="bar-row">
-      <div class="bar-label">${cat}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/maxCat*100)}%;background:#60a5fa"></div></div>
-      <div class="bar-val">${n}</div>
-    </div>`).join('');
+  // Barras categorías
+  const cc={};ventas.forEach(v=>{cc[v.categoria]=(cc[v.categoria]||0)+1;});
+  const topC=Object.entries(cc).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxC=topC[0][1];
+  document.getElementById('bars-categorias').innerHTML=topC.map(([cat,n])=>
+    `<div class="bar-row"><div class="bar-label">${cat}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/maxC*100)}%;background:#60a5fa"></div></div><div class="bar-val">${n}</div></div>`).join('');
 
-  // Chart: clientes nuevos por campaña
-  const primeraPorCliente = {};
-  ventas.forEach(v => {
-    const k = v.cliente;
-    if (!primeraPorCliente[k] || v.periodo < primeraPorCliente[k]) primeraPorCliente[k] = v.periodo;
-  });
-  const nuevosPorPeriodo = {};
-  Object.values(primeraPorCliente).forEach(p => {
-    const k = `C${p%100}·${Math.floor(p/100)}`;
-    nuevosPorPeriodo[k] = (nuevosPorPeriodo[k]||0) + 1;
-  });
-  const periodosNuevos = Object.keys(nuevosPorPeriodo).sort((a,b) => {
-    const [ca,aa] = a.replace('C','').split('·').map(Number);
-    const [cb,ab] = b.replace('C','').split('·').map(Number);
-    return aa*100+ca - (ab*100+cb);
-  });
-
-  destroyChart('nuevos');
-  charts['nuevos'] = new Chart(document.getElementById('chart-nuevos'), {
-    type: 'line',
-    data: {
-      labels: periodosNuevos,
-      datasets: [{ data: periodosNuevos.map(k => nuevosPorPeriodo[k]), borderColor: '#a78bfa', backgroundColor: '#a78bfa22', tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: '#a78bfa' }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#778', font: { size: 9 } }, grid: { color: '#2a2f45' } }, y: { ticks: { color: '#778' }, grid: { color: '#2a2f45' } } } }
+  // Clientes nuevos por campaña
+  const primerPer={};
+  ventas.forEach(v=>{if(!primerPer[v.cliente]||v.periodo<primerPer[v.cliente])primerPer[v.cliente]=v.periodo;});
+  const npc={};
+  Object.values(primerPer).forEach(p=>{const k=`C${p%100}·${Math.floor(p/100)}`;npc[k]=(npc[k]||0)+1;});
+  const pNuevos=Object.keys(npc).sort((a,b)=>{const[ca,aa]=a.replace('C','').split('·').map(Number);const[cb,ab]=b.replace('C','').split('·').map(Number);return aa*100+ca-(ab*100+cb);});
+  destroyChart('npc');
+  charts['npc']=new Chart(document.getElementById('chart-nuevos'),{
+    type:'line',data:{labels:pNuevos,datasets:[{data:pNuevos.map(k=>npc[k]),borderColor:'#a78bfa',backgroundColor:'#a78bfa22',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#a78bfa'}]},
+    options:CHART_DEFAULTS
   });
 
   // Top clientes
-  const topClientes = [...DATA.clientes].sort((a,b) => b.totalProductos - a.totalProductos).slice(0,10);
-  document.querySelector('#tabla-top-clientes tbody').innerHTML = topClientes.map((c,i) => {
-    const eClass = c.estado && c.estado.includes('Activo') ? 'activo' : c.estado && c.estado.includes('Contactar') ? 'contactar' : 'inactivo';
-    return `<tr onclick="irABuscar('${c.nombre.replace(/'/g,"\\'")}')">
-      <td class="strong">${i+1}</td>
-      <td class="strong">${c.nombre}</td>
+  const topCl=[...DATA.clientes].sort((a,b)=>b.totalProductos-a.totalProductos).slice(0,10);
+  document.querySelector('#tabla-top tbody').innerHTML=topCl.map((c,i)=>
+    `<tr onclick="irABuscar('${c.nombre.replace(/'/g,"\\'")}')">
+      <td class="strong">${i+1}</td><td class="strong">${c.nombre}</td>
       <td>${c.totalProductos}</td>
-      <td><span class="badge badge-${eClass}">${c.estado||'—'}</span></td>
-    </tr>`;
-  }).join('');
+      <td><span class="badge badge-${esBadge(c.estado)}">${c.estado||'—'}</span></td>
+    </tr>`).join('');
 
-  // Barras: productos
-  const prodCount = {};
-  ventas.forEach(v => { prodCount[v.producto] = (prodCount[v.producto]||0) + 1; });
-  const topProds = Object.entries(prodCount).sort((a,b) => b[1]-a[1]).slice(0,8);
-  const maxProd = topProds[0][1];
-  document.getElementById('bars-productos').innerHTML = topProds.map(([prod,n]) =>
-    `<div class="bar-row">
-      <div class="bar-label">${prod}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/maxProd*100)}%;background:#fbbf24"></div></div>
-      <div class="bar-val">${n}</div>
-    </div>`).join('');
+  // Barras productos
+  const pc={};ventas.forEach(v=>{pc[v.producto]=(pc[v.producto]||0)+1;});
+  const topP=Object.entries(pc).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxP=topP[0][1];
+  document.getElementById('bars-productos').innerHTML=topP.map(([p,n])=>
+    `<div class="bar-row"><div class="bar-label">${p}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/maxP*100)}%;background:#fbbf24"></div></div><div class="bar-val">${n}</div></div>`).join('');
 }
 
 // ── Tabla clientes ────────────────────────────────────────────────────
-let filtroClientes = 'todos';
-function filtrarClientes(f, btn) {
-  filtroClientes = f;
-  renderTablaClientes();
-}
+function filtrarClientes(f,btn){filtroClientesActual=f;renderTablaClientes();}
 
 function renderTablaClientes() {
-  let lista = DATA.clientes;
-  if (filtroClientes === 'activo') lista = lista.filter(c => c.estado && c.estado.includes('Activo'));
-  else if (filtroClientes === 'contactar') lista = lista.filter(c => c.estado && c.estado.includes('Contactar'));
-  else if (filtroClientes === 'inactivo') lista = lista.filter(c => c.estado && c.estado.includes('Inactivo'));
+  let lista=[...DATA.clientes];
+  if(filtroClientesActual==='activo') lista=lista.filter(c=>c.estado&&c.estado.includes('Activo'));
+  else if(filtroClientesActual==='contactar') lista=lista.filter(c=>c.estado&&c.estado.includes('Contactar'));
+  else if(filtroClientesActual==='inactivo') lista=lista.filter(c=>c.estado&&c.estado.includes('Inactivo'));
 
-  document.querySelector('#tabla-clientes tbody').innerHTML = lista.map(c => {
-    const eClass = c.estado && c.estado.includes('Activo') ? 'activo' : c.estado && c.estado.includes('Contactar') ? 'contactar' : 'inactivo';
+  document.querySelector('#tabla-clientes tbody').innerHTML=lista.map(c=>{
+    const enSeg=seguimiento[c.nombre]&&!seguimiento[c.nombre].checked;
     return `<tr onclick="irABuscar('${c.nombre.replace(/'/g,"\\'")}')">
-      <td class="strong">${c.nombre}</td>
-      <td>${c.totalProductos}</td>
-      <td>${fmtPeriodo(c.ultimoPeriodo)}</td>
-      <td>${c.campañasSin}</td>
-      <td><span class="badge badge-${eClass}">${c.estado||'—'}</span></td>
-    </tr>`;
-  }).join('');
+      <td class="strong">${c.nombre}</td><td>${c.totalProductos}</td>
+      <td>${fmtPeriodo(c.ultimoPeriodo)}</td><td>${c.campañasSin}</td>
+      <td><span class="badge badge-${esBadge(c.estado)}">${c.estado||'—'}</span></td>
+      <td><button onclick="event.stopPropagation();toggleSeguimiento('${c.nombre.replace(/'/g,"\\'")}','${c.estado||''}')" class="btn ${enSeg?'btn-blue':'btn-gray'}" style="padding:3px 8px;font-size:10px">${enSeg?'📌 Sí':'📌'}</button></td>
+    </tr>`;}).join('');
 }
 
 // ── Buscar / Ficha ────────────────────────────────────────────────────
-function onSearch(q) {
-  const dd = document.getElementById('search-dropdown');
-  if (!q || q.length < 2) { dd.style.display = 'none'; return; }
-  const matches = DATA.clientes.filter(c => c.nombre.toUpperCase().includes(q.toUpperCase())).slice(0,8);
-  if (!matches.length) { dd.style.display = 'none'; return; }
-  dd.innerHTML = matches.map(c =>
+function onSearch(q){
+  const dd=document.getElementById('search-dropdown');
+  if(!q||q.length<2){dd.style.display='none';return;}
+  const matches=DATA.clientes.filter(c=>c.nombre.toUpperCase().includes(q.toUpperCase())).slice(0,8);
+  if(!matches.length){dd.style.display='none';return;}
+  dd.innerHTML=matches.map(c=>
     `<div class="search-opt" onclick="seleccionarCliente('${c.nombre.replace(/'/g,"\\'")}')">
-      <span>${c.estado ? c.estado.split(' ')[0] : ''} ${c.nombre}</span>
+      <span>${c.estado?c.estado.split(' ')[0]:''} ${c.nombre}</span>
       <span style="color:var(--text3);font-size:11px">${c.totalProductos} productos</span>
     </div>`).join('');
-  dd.style.display = 'block';
+  dd.style.display='block';
 }
 
-function seleccionarCliente(nombre) {
-  document.getElementById('search-input').value = nombre;
-  document.getElementById('search-dropdown').style.display = 'none';
+function seleccionarCliente(nombre){
+  document.getElementById('search-input').value=nombre;
+  document.getElementById('search-dropdown').style.display='none';
   renderFicha(nombre);
 }
 
-function irABuscar(nombre) {
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+function irABuscar(nombre){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.nav-btn')[2].classList.add('active');
-  document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-  document.getElementById('screen-buscar').style.display = 'block';
-  document.getElementById('search-input').value = nombre;
+  document.querySelectorAll('.screen').forEach(s=>s.style.display='none');
+  document.getElementById('screen-buscar').style.display='block';
+  document.getElementById('search-input').value=nombre;
   renderFicha(nombre);
 }
 
-function renderFicha(nombre) {
-  const c = DATA.clientes.find(x => x.nombre === nombre);
-  if (!c) return;
-  const compras = DATA.ventas.filter(v => v.cliente === nombre).sort((a,b) => b.periodo - a.periodo);
+function renderFicha(nombre){
+  const c=DATA.clientes.find(x=>x.nombre===nombre);
+  if(!c)return;
+  const compras=DATA.ventas.filter(v=>v.cliente===nombre).sort((a,b)=>b.periodo-a.periodo);
+  const cc={};compras.forEach(v=>{cc[v.categoria]=(cc[v.categoria]||0)+1;});
+  const topCats=Object.entries(cc).sort((a,b)=>b[1]-a[1]);
+  const nota=notas[nombre]||'';
+  const enSeg=seguimiento[nombre]&&!seguimiento[nombre].checked;
 
-  const eClass = c.estado && c.estado.includes('Activo') ? 'activo' : c.estado && c.estado.includes('Contactar') ? 'contactar' : 'inactivo';
+  const alertas=[];
+  if(c.campañasSin>5) alertas.push({tipo:'roja',msg:`Inactiva hace ${c.campañasSin} campañas`});
+  else if(c.campañasSin===2) alertas.push({tipo:'purple',msg:`⚠️ En riesgo — 2 campañas sin comprar`});
+  else if(c.campañasSin>2) alertas.push({tipo:'amarilla',msg:`Hace ${c.campañasSin} campañas sin comprar`});
+  if(topCats[0]&&topCats[0][1]>=3) alertas.push({tipo:'verde',msg:`Compra ${topCats[0][0]} frecuentemente (${topCats[0][1]} veces)`});
 
-  // Categorías
-  const catCount = {};
-  compras.forEach(v => { catCount[v.categoria] = (catCount[v.categoria]||0) + 1; });
-  const topCats = Object.entries(catCount).sort((a,b) => b[1]-a[1]);
+  const porPeriodo={};
+  compras.forEach(v=>{if(!porPeriodo[v.periodo])porPeriodo[v.periodo]=[];porPeriodo[v.periodo].push(v);});
 
-  // Alertas
-  const alertas = [];
-  if (c.campañasSin > 5) alertas.push({ tipo: 'roja', msg: `Inactiva hace ${c.campañasSin} campañas` });
-  else if (c.campañasSin > 2) alertas.push({ tipo: 'amarilla', msg: `Hace ${c.campañasSin} campañas sin comprar` });
-  if (topCats[0] && topCats[0][1] >= 3) alertas.push({ tipo: 'verde', msg: `Compra ${topCats[0][0]} frecuentemente (${topCats[0][1]} veces)` });
-
-  // Historial agrupado por periodo
-  const porPeriodo = {};
-  compras.forEach(v => {
-    const k = v.periodo;
-    if (!porPeriodo[k]) porPeriodo[k] = [];
-    porPeriodo[k].push(v);
-  });
-
-  document.getElementById('ficha-contenido').innerHTML = `
-    <div class="card" style="margin-bottom:16px">
+  document.getElementById('ficha-contenido').innerHTML=`
+    <div class="card">
       <div class="ficha-header">
         <div class="ficha-avatar">👤</div>
-        <div>
+        <div style="flex:1">
           <div class="ficha-nombre">${c.nombre}</div>
-          <div class="ficha-estado"><span class="badge badge-${eClass}">${c.estado||'—'}</span></div>
+          <div class="ficha-estado"><span class="badge badge-${esBadge(c.estado)}">${c.estado||'—'}</span></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn ${enSeg?'btn-blue':'btn-gray'}" onclick="toggleSeguimiento('${c.nombre.replace(/'/g,"\\'")}','${c.estado||''}')" style="font-size:11px;padding:5px 10px">${enSeg?'📌 En seguimiento':'📌 Agregar'}</button>
+          <button class="btn btn-gray" onclick="abrirNota('${c.nombre.replace(/'/g,"\\'")}')">🗒 Nota</button>
         </div>
       </div>
       <div class="grid-3" style="margin-bottom:12px">
@@ -502,39 +580,284 @@ function renderFicha(nombre) {
         <div class="stat-mini"><div class="stat-mini-num">${c.campañasSin}</div><div class="stat-mini-label">Sin comprar</div></div>
         <div class="stat-mini"><div class="stat-mini-num">${topCats.length}</div><div class="stat-mini-label">Categorías</div></div>
       </div>
-      <div style="font-size:11px;color:var(--text3)">Primera compra: <strong style="color:var(--text2)">${fmtPeriodo(c.primerPeriodo)}</strong> &nbsp;·&nbsp; Última: <strong style="color:var(--text2)">${fmtPeriodo(c.ultimoPeriodo)}</strong></div>
+      <div style="font-size:11px;color:var(--text3)">Primera: <strong style="color:var(--text2)">${fmtPeriodo(c.primerPeriodo)}</strong> &nbsp;·&nbsp; Última: <strong style="color:var(--text2)">${fmtPeriodo(c.ultimoPeriodo)}</strong></div>
+      ${nota?`<div style="margin-top:10px;font-size:12px;background:var(--bg3);padding:8px 12px;border-radius:6px;color:var(--text2)">🗒 ${nota}</div>`:''}
     </div>
 
-    ${topCats.length ? `<div class="card" style="margin-bottom:16px">
+    ${topCats.length?`<div class="card">
       <div class="card-title">❤️ Preferencias</div>
-      ${topCats.slice(0,5).map(([cat,n],i) =>
-        `<div class="bar-row">
-          <div class="bar-label">${i===0?'⭐ ':''}${cat}</div>
-          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/topCats[0][1]*100)}%;background:#60a5fa"></div></div>
-          <div class="bar-val">${n}</div>
-        </div>`).join('')}
-    </div>` : ''}
+      ${topCats.slice(0,5).map(([cat,n],i)=>`<div class="bar-row"><div class="bar-label">${i===0?'⭐ ':''}${cat}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/topCats[0][1]*100)}%;background:#60a5fa"></div></div><div class="bar-val">${n}</div></div>`).join('')}
+    </div>`:''}
 
-    ${alertas.length ? `<div class="card" style="margin-bottom:16px">
+    ${alertas.length?`<div class="card">
       <div class="card-title">💡 Alertas</div>
-      ${alertas.map(a => `<div class="alerta ${a.tipo}">${a.tipo==='verde'?'🟢':a.tipo==='amarilla'?'🟡':'🔴'} ${a.msg}</div>`).join('')}
-    </div>` : ''}
+      ${alertas.map(a=>`<div class="alerta ${a.tipo}">${a.msg}</div>`).join('')}
+    </div>`:''}
 
     <div class="card">
       <div class="card-title">🕐 Historial completo (${compras.length} productos)</div>
-      ${Object.entries(porPeriodo).sort((a,b) => b[0]-a[0]).map(([periodo, items]) => `
+      ${Object.entries(porPeriodo).sort((a,b)=>b[0]-a[0]).map(([periodo,items])=>`
         <div class="periodo-header">📅 ${fmtPeriodo(parseInt(periodo))}</div>
-        ${items.map(v => `<div class="prod-item"><span>${v.producto}</span><span class="prod-cat">${v.categoria}</span></div>`).join('')}
+        ${items.map(v=>`<div class="prod-item"><span>${v.producto}</span><span class="prod-cat">${v.categoria}</span></div>`).join('')}
       `).join('')}
-    </div>
-  `;
+    </div>`;
+}
+
+// ── Nueva venta ───────────────────────────────────────────────────────
+async function guardarVenta(){
+  const cliente=document.getElementById('v-cliente').value.trim().toUpperCase();
+  const producto=document.getElementById('v-producto').value.trim();
+  const categoria=document.getElementById('v-categoria').value.trim();
+  const año=parseInt(document.getElementById('v-año').value);
+  const campaña=parseInt(document.getElementById('v-campaña').value);
+  const st=document.getElementById('venta-status');
+
+  if(!cliente||!producto||!categoria){st.textContent='⚠️ Completá todos los campos';st.style.color='var(--red)';return;}
+
+  const periodo=año*100+campaña;
+  const nueva={cliente,producto,categoria,año,campaña,periodo};
+  DATA.ventas.push(nueva);
+
+  st.textContent='Guardando...';st.style.color='var(--text3)';
+
+  try{
+    fetch(APPS_SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'agregarVenta',...nueva})
+    });
+    st.textContent='✓ Venta registrada correctamente';st.style.color='var(--green)';
+    document.getElementById('v-cliente').value='';
+    document.getElementById('v-producto').value='';
+    document.getElementById('v-categoria').value='';
+    poblarDataLists();
+    renderDashboard();
+    renderTablaClientes();
+    showToast('✓ Venta guardada');
+  }catch(e){st.textContent='Error al guardar';st.style.color='var(--red)';}
+}
+
+// ── En riesgo ─────────────────────────────────────────────────────────
+function renderRiesgo(){
+  const enRiesgo=DATA.clientes.filter(c=>c.campañasSin===2).sort((a,b)=>b.totalProductos-a.totalProductos);
+  document.querySelector('#tabla-riesgo tbody').innerHTML=enRiesgo.map(c=>{
+    const compras=DATA.ventas.filter(v=>v.cliente===c.nombre);
+    const cc={};compras.forEach(v=>{cc[v.categoria]=(cc[v.categoria]||0)+1;});
+    const favCat=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
+    return `<tr>
+      <td class="strong" onclick="irABuscar('${c.nombre.replace(/'/g,"\\'")}');return false;" style="cursor:pointer;color:var(--blue)">${c.nombre}</td>
+      <td>${fmtPeriodo(c.ultimoPeriodo)}</td>
+      <td><span class="badge badge-riesgo">${c.campañasSin} campañas</span></td>
+      <td>${favCat?favCat[0]:'—'}</td>
+      <td><button class="btn btn-blue" style="font-size:10px;padding:3px 8px" onclick="toggleSeguimiento('${c.nombre.replace(/'/g,"\\'")}','${c.estado||''}')">📌 Seguir</button></td>
+    </tr>`;}).join('');
+
+  if(!enRiesgo.length){
+    document.querySelector('#tabla-riesgo tbody').innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:30px">No hay clientes en riesgo 🎉</td></tr>';
+  }
+}
+
+// ── Seguimiento ───────────────────────────────────────────────────────
+function toggleSeguimiento(nombre,estado){
+  if(seguimiento[nombre]&&!seguimiento[nombre].checked){
+    if(confirm(`Sacar a ${nombre} del seguimiento?`)){
+      delete seguimiento[nombre];
+    }
+  } else {
+    seguimiento[nombre]={checked:false,nota:'',estado,ts:Date.now()};
+  }
+  localStorage.setItem('crm-seguimiento',JSON.stringify(seguimiento));
+  renderSeguimiento();
+  renderDashboard();
+  renderTablaClientes();
+  showToast('✓ Seguimiento actualizado');
+}
+
+function renderSeguimiento(){
+  const lista=Object.entries(seguimiento).sort((a,b)=>a[1].checked-b[1].checked);
+  const pendientes=lista.filter(([,v])=>!v.checked).length;
+  document.getElementById('seg-count').textContent=`${pendientes} pendientes · ${lista.length-pendientes} completados`;
+
+  if(!lista.length){
+    document.getElementById('lista-seguimiento').innerHTML='<div style="color:var(--text3);font-size:13px;text-align:center;padding:40px">No hay clientes en seguimiento.<br><small>Agregá desde la ficha de cada cliente o desde "En riesgo".</small></div>';
+    return;
+  }
+
+  document.getElementById('lista-seguimiento').innerHTML=lista.map(([nombre,seg])=>{
+    const c=DATA.clientes.find(x=>x.nombre===nombre)||{};
+    const nota=notas[nombre]||'';
+    return `<div class="seguimiento-item" style="${seg.checked?'opacity:0.4':''}">
+      <input type="checkbox" class="seguimiento-check" ${seg.checked?'checked':''} onchange="checkSeguimiento('${nombre.replace(/'/g,"\\'")}',this.checked)">
+      <div class="seguimiento-info">
+        <div class="seguimiento-nombre" onclick="irABuscar('${nombre.replace(/'/g,"\\'")}');return false;" style="cursor:pointer;color:var(--blue)">${nombre}</div>
+        <div class="seguimiento-nota">${c.campañasSin||0} sin comprar · ${nota||'Sin nota'}</div>
+      </div>
+      <span class="badge badge-${esBadge(seg.estado)}" style="font-size:10px">${seg.estado||'—'}</span>
+      <button class="btn btn-gray" onclick="abrirNota('${nombre.replace(/'/g,"\\'")}')">🗒</button>
+    </div>`;}).join('');
+}
+
+function checkSeguimiento(nombre,checked){
+  if(seguimiento[nombre]) seguimiento[nombre].checked=checked;
+  localStorage.setItem('crm-seguimiento',JSON.stringify(seguimiento));
+  renderSeguimiento();
+}
+
+function limpiarSeguimiento(){
+  Object.keys(seguimiento).forEach(k=>{ if(seguimiento[k].checked) delete seguimiento[k]; });
+  localStorage.setItem('crm-seguimiento',JSON.stringify(seguimiento));
+  renderSeguimiento();
+  renderDashboard();
+}
+
+// ── Notas ─────────────────────────────────────────────────────────────
+function abrirNota(nombre){
+  notaClienteActual=nombre;
+  document.getElementById('modal-nota-titulo').textContent=`Nota: ${nombre}`;
+  document.getElementById('nota-texto').value=notas[nombre]||'';
+  document.getElementById('modal-nota').classList.add('open');
+}
+function guardarNota(){
+  if(!notaClienteActual)return;
+  const txt=document.getElementById('nota-texto').value.trim();
+  if(txt) notas[notaClienteActual]=txt;
+  else delete notas[notaClienteActual];
+  localStorage.setItem('crm-notas',JSON.stringify(notas));
+  cerrarModal('modal-nota');
+  renderFicha(notaClienteActual);
+  renderSeguimiento();
+  showToast('✓ Nota guardada');
+}
+
+// ── Config campaña ────────────────────────────────────────────────────
+function abrirConfigCampaña(){
+  document.getElementById('cfg-año').value=DATA.config.añoActual;
+  document.getElementById('cfg-campaña').value=DATA.config.campañaActual;
+  document.getElementById('modal-config').classList.add('open');
+}
+async function guardarConfig(){
+  const año=parseInt(document.getElementById('cfg-año').value);
+  const campaña=parseInt(document.getElementById('cfg-campaña').value);
+  DATA.config={añoActual:año,campañaActual:campaña};
+  actualizarBadge();
+  cerrarModal('modal-config');
+
+  try{
+    fetch(APPS_SCRIPT_URL,{
+      method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'updateConfig',añoActual:año,campañaActual:campaña})
+    });
+    showToast('✓ Campaña actualizada');
+  }catch(e){showToast('Config guardada localmente','var(--yellow)');}
+}
+
+// ── Mapa de calor ─────────────────────────────────────────────────────
+function renderHeatMap(){
+  const ventas=DATA.ventas;
+  const cats=[...new Set(ventas.map(v=>v.categoria))].sort();
+  const periodos=[...new Set(ventas.map(v=>`${v.año}-${String(v.campaña).padStart(2,'0')}`))]
+    .sort().slice(-10).map(p=>{const[a,c]=p.split('-');return{label:`C${parseInt(c)}·${a}`,key:p};});
+
+  const heat={};
+  ventas.forEach(v=>{
+    const k=`${v.año}-${String(v.campaña).padStart(2,'0')}`;
+    if(!heat[k])heat[k]={};
+    heat[k][v.categoria]=(heat[k][v.categoria]||0)+1;
+  });
+
+  const maxVal=Math.max(...Object.values(heat).flatMap(o=>Object.values(o)));
+
+  const table=document.getElementById('heat-table');
+  table.innerHTML=`
+    <thead><tr><th style="text-align:left">Categoría</th>${periodos.map(p=>`<th>${p.label}</th>`).join('')}</tr></thead>
+    <tbody>${cats.map(cat=>`
+      <tr><td style="text-align:left;color:var(--text2);padding:5px 8px;font-size:11px">${cat}</td>
+      ${periodos.map(p=>{
+        const v=heat[p.key]?.[cat]||0;
+        const lvl=v===0?0:v<maxVal*.25?1:v<maxVal*.5?2:v<maxVal*.75?3:4;
+        return `<td class="heat-${lvl}">${v||''}</td>`;
+      }).join('')}</tr>`).join('')}
+    </tbody>`;
+}
+
+// ── Retención ─────────────────────────────────────────────────────────
+function renderRetencion(){
+  const ventas=DATA.ventas;
+  const periodos=[...new Set(ventas.map(v=>`${v.año}-${String(v.campaña).padStart(2,'0')}`))].sort();
+
+  const retPorPeriodo=[];
+  for(let i=1;i<periodos.length;i++){
+    const prev=periodos[i-1], curr=periodos[i];
+    const cPrev=new Set(ventas.filter(v=>`${v.año}-${String(v.campaña).padStart(2,'0')}`===prev).map(v=>v.cliente));
+    const cCurr=new Set(ventas.filter(v=>`${v.año}-${String(v.campaña).padStart(2,'0')}`===curr).map(v=>v.cliente));
+    const ret=cPrev.size>0?Math.round([...cPrev].filter(c=>cCurr.has(c)).length/cPrev.size*100):0;
+    const[a,c]=curr.split('-');
+    retPorPeriodo.push({label:`C${parseInt(c)}·${a}`,ret,nuevos:[...cCurr].filter(c=>!cPrev.has(c)).length,perdidos:[...cPrev].filter(c=>!cCurr.has(c)).length});
+  }
+
+  const ultimos=retPorPeriodo.slice(-8);
+  const promRet=Math.round(retPorPeriodo.reduce((s,r)=>s+r.ret,0)/retPorPeriodo.length);
+  const maxRet=Math.max(...retPorPeriodo.map(r=>r.ret));
+
+  document.getElementById('retencion-kpis').innerHTML=`
+    <div class="card-sm"><div class="kpi-label">Retención promedio</div><div class="kpi-num kpi-green">${promRet}%</div></div>
+    <div class="card-sm"><div class="kpi-label">Mejor campaña</div><div class="kpi-num kpi-blue">${maxRet}%</div></div>
+    <div class="card-sm"><div class="kpi-label">Campaña actual</div><div class="kpi-num kpi-green">${retPorPeriodo[retPorPeriodo.length-1]?.ret||0}%</div></div>`;
+
+  destroyChart('ret');
+  charts['ret']=new Chart(document.getElementById('chart-retencion'),{
+    type:'line',
+    data:{labels:ultimos.map(r=>r.label),datasets:[
+      {label:'Retención %',data:ultimos.map(r=>r.ret),borderColor:'#4ade80',backgroundColor:'#4ade8022',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#4ade80',yAxisID:'y'},
+      {label:'Nuevos',data:ultimos.map(r=>r.nuevos),borderColor:'#60a5fa',backgroundColor:'transparent',tension:.4,pointRadius:4,pointBackgroundColor:'#60a5fa',yAxisID:'y1'},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'bottom',labels:{color:'#bbc',font:{size:11},padding:12}}},
+      scales:{
+        x:{ticks:{color:'#778',font:{size:9}},grid:{color:'#2a2f45'}},
+        y:{ticks:{color:'#778',callback:v=>v+'%'},grid:{color:'#2a2f45'},min:0,max:100},
+        y1:{position:'right',ticks:{color:'#60a5fa'},grid:{display:false}}
+      }}
+  });
+
+  // Comparativa campaña actual vs anterior
+  const curr=retPorPeriodo[retPorPeriodo.length-1];
+  const prev=retPorPeriodo[retPorPeriodo.length-2];
+  if(curr&&prev){
+    const diff=curr.ret-prev.ret;
+    document.getElementById('comparativa-detalle').innerHTML=`
+      <div class="grid-3">
+        <div class="stat-mini"><div class="stat-mini-num">${curr.ret}%</div><div class="stat-mini-label">Retención actual (${curr.label})</div></div>
+        <div class="stat-mini"><div class="stat-mini-num" style="color:${diff>=0?'var(--green)':'var(--red)'}">${diff>=0?'+':''}${diff}%</div><div class="stat-mini-label">vs campaña anterior</div></div>
+        <div class="stat-mini"><div class="stat-mini-num" style="color:var(--blue)">${curr.nuevos}</div><div class="stat-mini-label">Clientes nuevos</div></div>
+      </div>`;
+  }
+}
+
+// ── Exportar CSV ──────────────────────────────────────────────────────
+function exportarLista(){
+  let lista=[...DATA.clientes];
+  if(filtroClientesActual==='activo') lista=lista.filter(c=>c.estado&&c.estado.includes('Activo'));
+  else if(filtroClientesActual==='contactar') lista=lista.filter(c=>c.estado&&c.estado.includes('Contactar'));
+  else if(filtroClientesActual==='inactivo') lista=lista.filter(c=>c.estado&&c.estado.includes('Inactivo'));
+
+  const csv=['Cliente,Productos,Ultima compra,Campañas sin comprar,Estado,Nota']
+    .concat(lista.map(c=>`"${c.nombre}",${c.totalProductos},${fmtPeriodo(c.ultimoPeriodo)},${c.campañasSin},"${c.estado||''}","${notas[c.nombre]||''}"`))
+    .join('\n');
+
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download=`clientes-${filtroClientesActual}-${new Date().toLocaleDateString('es-AR').replace(/\//g,'-')}.csv`;
+  a.click();
+  showToast('✓ CSV descargado');
 }
 
 // ── Nav ───────────────────────────────────────────────────────────────
-function setScreen(name, btn) {
-  document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('screen-' + name).style.display = 'block';
+function setScreen(name,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.style.display='none');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+name).style.display='block';
   btn.classList.add('active');
 }
 
