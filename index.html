@@ -116,6 +116,19 @@
     .ret-box{background:var(--bg3);border-radius:6px;padding:10px;text-align:center;}
     .ret-num{font-size:18px;font-weight:700;}
     .ret-label{font-size:10px;color:var(--text3);margin-top:2px;}
+    .alerta-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
+    .alerta-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+    .alerta-titulo{font-size:13px;font-weight:600;margin-bottom:3px;}
+    .alerta-desc{font-size:12px;color:var(--text3);}
+    .alerta-accion{margin-left:auto;flex-shrink:0;}
+    .cmp-col{background:var(--bg3);border-radius:8px;padding:14px;}
+    .cmp-nombre{font-size:15px;font-weight:700;margin-bottom:10px;text-align:center;}
+    .cmp-stat{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);}
+    .cmp-stat:last-child{border-bottom:none;}
+    .cmp-win{color:var(--green);font-weight:600;}
+    .año-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-size:12px;}
+    .año-btn.active{background:var(--green-bg);color:var(--green);border-color:var(--green);}
+    .bi-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:3px;background:var(--bg4);color:var(--text3);margin:2px;}
     @media(max-width:700px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr;}.content{padding:12px;}}
     @media(max-width:480px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
   </style>
@@ -139,6 +152,10 @@
   <button class="nav-btn" onclick="setScreen('seguimiento',this)">📌 Seguimiento</button>
   <button class="nav-btn" onclick="setScreen('heat',this)">🗺️ Mapa calor</button>
   <button class="nav-btn" onclick="setScreen('retencion',this)">🔄 Retención</button>
+  <button class="nav-btn" onclick="setScreen('buscador-inteligente',this)">🤖 Buscador</button>
+  <button class="nav-btn" onclick="setScreen('historial-anual',this)">📅 Historial anual</button>
+  <button class="nav-btn" onclick="setScreen('comparar',this)">⚖️ Comparar</button>
+  <button class="nav-btn" onclick="setScreen('alertas',this)">🔔 Alertas</button>
 </div>
 
 <div class="content">
@@ -285,9 +302,60 @@
     </div>
   </div>
 
-</div>
+  <!-- BUSCADOR INTELIGENTE -->
+  <div id="screen-buscador-inteligente" class="screen">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">🤖 Buscador inteligente</div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:14px">Escribí una consulta en lenguaje natural o usá los filtros rápidos.</p>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input type="text" id="bi-input" style="flex:1" placeholder='Ej: "compraron perfumes pero nunca maquillaje"' onkeydown="if(event.key==='Enter')ejecutarBusqueda()">
+        <button class="btn btn-green" onclick="ejecutarBusqueda()">Buscar</button>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-gray" style="font-size:11px" onclick="busquedaRapida('inactivos6')">Inactivos +6 campañas</button>
+        <button class="btn btn-gray" style="font-size:11px" onclick="busquedaRapida('mas30')">Más de 30 productos</button>
+        <button class="btn btn-gray" style="font-size:11px" onclick="busquedaRapida('nuevos')">Clientes nuevos (última campaña)</button>
+        <button class="btn btn-gray" style="font-size:11px" onclick="busquedaRapida('soloperfumes')">Solo compraron perfumes</button>
+        <button class="btn btn-gray" style="font-size:11px" onclick="busquedaRapida('nuncaperfumes')">Nunca compraron perfumes</button>
+        <button class="btn btn-gray" style="font-size:11px" onclick="busquedaRapida('riesgo')">En riesgo (2 campañas sin comprar)</button>
+      </div>
+    </div>
+    <div id="bi-resultado"></div>
+  </div>
 
-<!-- MODAL CONFIG CAMPAÑA -->
+  <!-- HISTORIAL ANUAL -->
+  <div id="screen-historial-anual" class="screen">
+    <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap">
+      <div style="font-size:13px;color:var(--text2)">Año:</div>
+      <div id="ha-años" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+    <div id="ha-contenido"></div>
+  </div>
+
+  <!-- COMPARAR CLIENTES -->
+  <div id="screen-comparar" class="screen">
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">⚖️ Comparar dos clientes</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group" style="margin:0">
+          <label>Cliente A</label>
+          <input type="text" id="cmp-a" list="dl-clientes" placeholder="Nombre del cliente A" oninput="renderComparativa()">
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>Cliente B</label>
+          <input type="text" id="cmp-b" list="dl-clientes" placeholder="Nombre del cliente B" oninput="renderComparativa()">
+        </div>
+      </div>
+    </div>
+    <div id="cmp-contenido"></div>
+  </div>
+
+  <!-- ALERTAS -->
+  <div id="screen-alertas" class="screen">
+    <div id="alertas-contenido"></div>
+  </div>
+
+</div>
 <div class="modal" id="modal-config">
   <div class="modal-box">
     <div class="modal-title">⚙️ Configurar campaña actual</div>
@@ -315,8 +383,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyiTDpS8qRIRRpdAB7uexuNddP3mvq6HM2UnrOeGSJHj_VEEyh5qbJUXW578IjcRdZV/exec';
-  
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqPOgyy729KX9Isa-wm-p84HH0XhKSRASGQsOFeGryj_sD64hpEUh-Bh0GI43i357P/exec';
+
 let DATA = { ventas: [], clientes: [], config: { añoActual: 2026, campañaActual: 10 } };
 let charts = {};
 let seguimiento = JSON.parse(localStorage.getItem('crm-seguimiento') || '{}'); // {nombre: {checked, nota}}
@@ -853,12 +921,381 @@ function exportarLista(){
   showToast('✓ CSV descargado');
 }
 
+// ── Buscador inteligente ──────────────────────────────────────────────
+function ejecutarBusqueda(){
+  const q=document.getElementById('bi-input').value.trim().toLowerCase();
+  if(!q){document.getElementById('bi-resultado').innerHTML='';return;}
+
+  let resultado=[];
+  let titulo='';
+
+  // Parsear consulta
+  const cats=[...new Set(DATA.ventas.map(v=>v.categoria.toLowerCase()))];
+  const catMencionada=cats.find(c=>q.includes(c));
+  const catExcluida=cats.find(c=>q.includes('nunca '+c)||q.includes('sin '+c));
+  const nProd=q.match(/m[aá]s de (\d+)/);
+  const nInac=q.match(/(\d+) campa/);
+
+  if(catMencionada&&catExcluida&&catMencionada!==catExcluida){
+    // Compraron X pero nunca Y
+    resultado=DATA.clientes.filter(c=>{
+      const compras=DATA.ventas.filter(v=>v.cliente===c.nombre);
+      const tieneA=compras.some(v=>v.categoria.toLowerCase()===catMencionada);
+      const tieneB=compras.some(v=>v.categoria.toLowerCase()===catExcluida);
+      return tieneA&&!tieneB;
+    });
+    titulo=`Compraron "${catMencionada}" pero nunca "${catExcluida}"`;
+  } else if(q.includes('inactiv')&&nInac){
+    const n=parseInt(nInac[1]);
+    resultado=DATA.clientes.filter(c=>c.campañasSin>=n);
+    titulo=`Inactivos hace ${n}+ campañas`;
+  } else if(nProd){
+    const n=parseInt(nProd[1]);
+    resultado=DATA.clientes.filter(c=>c.totalProductos>n);
+    titulo=`Más de ${n} productos comprados`;
+  } else if(q.includes('activ')&&!q.includes('inactiv')){
+    resultado=DATA.clientes.filter(c=>c.estado&&c.estado.includes('Activo'));
+    titulo='Clientes activos';
+  } else if(q.includes('inactiv')){
+    resultado=DATA.clientes.filter(c=>c.estado&&c.estado.includes('Inactivo'));
+    titulo='Clientes inactivos';
+  } else if(q.includes('contactar')){
+    resultado=DATA.clientes.filter(c=>c.estado&&c.estado.includes('Contactar'));
+    titulo='Clientes a contactar';
+  } else if(q.includes('riesgo')){
+    resultado=DATA.clientes.filter(c=>c.campañasSin===2);
+    titulo='Clientes en riesgo';
+  } else if(catMencionada){
+    resultado=DATA.clientes.filter(c=>DATA.ventas.some(v=>v.cliente===c.nombre&&v.categoria.toLowerCase()===catMencionada));
+    titulo=`Compraron "${catMencionada}"`;
+  } else {
+    resultado=DATA.clientes.filter(c=>c.nombre.toLowerCase().includes(q));
+    titulo=`Resultados para "${q}"`;
+  }
+
+  mostrarResultadoBusqueda(resultado,titulo);
+}
+
+function busquedaRapida(tipo){
+  const pa=periodoActual();
+  let resultado=[],titulo='';
+  if(tipo==='inactivos6'){
+    resultado=DATA.clientes.filter(c=>c.campañasSin>=6);
+    titulo='Inactivos hace 6+ campañas';
+  } else if(tipo==='mas30'){
+    resultado=DATA.clientes.filter(c=>c.totalProductos>30);
+    titulo='Más de 30 productos comprados';
+  } else if(tipo==='nuevos'){
+    resultado=DATA.clientes.filter(c=>c.primerPeriodo===pa);
+    titulo='Clientes nuevos esta campaña';
+  } else if(tipo==='soloperfumes'){
+    resultado=DATA.clientes.filter(c=>{
+      const cats=new Set(DATA.ventas.filter(v=>v.cliente===c.nombre).map(v=>v.categoria.toLowerCase()));
+      return [...cats].every(c=>c.includes('perfum')||c.includes('colonia')||c.includes('edt')||c.includes('edp'));
+    });
+    titulo='Compraron solo perfumes/colonias';
+  } else if(tipo==='nuncaperfumes'){
+    resultado=DATA.clientes.filter(c=>{
+      const cats=DATA.ventas.filter(v=>v.cliente===c.nombre).map(v=>v.categoria.toLowerCase());
+      return !cats.some(c=>c.includes('perfum')||c.includes('colonia')||c.includes('edt')||c.includes('edp'));
+    });
+    titulo='Nunca compraron perfumes';
+  } else if(tipo==='riesgo'){
+    resultado=DATA.clientes.filter(c=>c.campañasSin===2);
+    titulo='En riesgo — 2 campañas sin comprar';
+  }
+  document.getElementById('bi-input').value=titulo;
+  mostrarResultadoBusqueda(resultado,titulo);
+}
+
+function mostrarResultadoBusqueda(resultado,titulo){
+  const el=document.getElementById('bi-resultado');
+  if(!resultado.length){
+    el.innerHTML=`<div class="card" style="text-align:center;padding:40px;color:var(--text3)">Sin resultados para "${titulo}"</div>`;
+    return;
+  }
+  el.innerHTML=`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="card-title" style="margin:0">${titulo} — ${resultado.length} clientes</div>
+      <button class="btn btn-gray" style="font-size:11px" onclick="exportarBusqueda()">⬇ CSV</button>
+    </div>
+    <table><thead><tr><th>Cliente</th><th>Productos</th><th>Última compra</th><th>Sin comprar</th><th>Estado</th></tr></thead>
+    <tbody>${resultado.map(c=>`<tr onclick="irABuscar('${c.nombre.replace(/'/g,"\\'")}')">
+      <td class="strong">${c.nombre}</td><td>${c.totalProductos}</td>
+      <td>${fmtPeriodo(c.ultimoPeriodo)}</td><td>${c.campañasSin}</td>
+      <td><span class="badge badge-${esBadge(c.estado)}">${c.estado||'—'}</span></td>
+    </tr>`).join('')}</tbody></table>
+  </div>`;
+  window._lastBusqueda=resultado;
+}
+
+function exportarBusqueda(){
+  const lista=window._lastBusqueda||[];
+  const csv=['Cliente,Productos,Ultima compra,Campañas sin comprar,Estado']
+    .concat(lista.map(c=>`"${c.nombre}",${c.totalProductos},${fmtPeriodo(c.ultimoPeriodo)},${c.campañasSin},"${c.estado||''}""`))
+    .join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='busqueda.csv';
+  a.click();
+}
+
+// ── Historial anual ───────────────────────────────────────────────────
+let añoSeleccionado=null;
+
+function renderHistorialAnual(){
+  const años=[...new Set(DATA.ventas.map(v=>v.año))].sort((a,b)=>b-a);
+  if(!añoSeleccionado) añoSeleccionado=años[0];
+
+  document.getElementById('ha-años').innerHTML=años.map(a=>
+    `<button class="año-btn ${a===añoSeleccionado?'active':''}" onclick="seleccionarAño(${a})">${a}</button>`
+  ).join('');
+
+  const ventasAño=DATA.ventas.filter(v=>v.año===añoSeleccionado);
+  const porCampaña={};
+  ventasAño.forEach(v=>{
+    if(!porCampaña[v.campaña]) porCampaña[v.campaña]={ventas:0,clientes:new Set(),cats:{}};
+    porCampaña[v.campaña].ventas++;
+    porCampaña[v.campaña].clientes.add(v.cliente);
+    porCampaña[v.campaña].cats[v.categoria]=(porCampaña[v.campaña].cats[v.categoria]||0)+1;
+  });
+
+  const catCount={};
+  ventasAño.forEach(v=>{catCount[v.categoria]=(catCount[v.categoria]||0)+1;});
+  const topCats=Object.entries(catCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  const camps=Object.keys(porCampaña).sort((a,b)=>a-b);
+
+  document.getElementById('ha-contenido').innerHTML=`
+    <div class="grid-3" style="margin-bottom:16px">
+      <div class="card-sm"><div class="kpi-label">Total ventas ${añoSeleccionado}</div><div class="kpi-num">${ventasAño.length}</div></div>
+      <div class="card-sm"><div class="kpi-label">Clientes únicos</div><div class="kpi-num kpi-green">${new Set(ventasAño.map(v=>v.cliente)).size}</div></div>
+      <div class="card-sm"><div class="kpi-label">Campañas activas</div><div class="kpi-num kpi-blue">${camps.length}</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Ventas por campaña — ${añoSeleccionado}</div>
+        <div class="chart-wrap"><canvas id="chart-ha"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Top categorías — ${añoSeleccionado}</div>
+        ${topCats.map(([cat,n])=>`<div class="bar-row"><div class="bar-label">${cat}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(n/topCats[0][1]*100)}%;background:#60a5fa"></div></div><div class="bar-val">${n}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Detalle por campaña</div>
+      <table><thead><tr><th>Campaña</th><th>Ventas</th><th>Clientes únicos</th><th>Top categoría</th></tr></thead>
+      <tbody>${camps.map(c=>{
+        const d=porCampaña[c];
+        const topCat=Object.entries(d.cats).sort((a,b)=>b[1]-a[1])[0];
+        return `<tr><td class="strong">Campaña ${c}</td><td>${d.ventas}</td><td>${d.clientes.size}</td><td>${topCat?topCat[0]:'—'}</td></tr>`;
+      }).join('')}</tbody></table>
+    </div>`;
+
+  destroyChart('ha');
+  setTimeout(()=>{
+    charts['ha']=new Chart(document.getElementById('chart-ha'),{
+      type:'bar',
+      data:{labels:camps.map(c=>`C${c}`),datasets:[
+        {label:'Ventas',data:camps.map(c=>porCampaña[c].ventas),backgroundColor:'#4ade8044',borderColor:'#4ade80',borderWidth:1.5,borderRadius:4},
+        {label:'Clientes',data:camps.map(c=>porCampaña[c].clientes.size),backgroundColor:'#60a5fa44',borderColor:'#60a5fa',borderWidth:1.5,borderRadius:4,yAxisID:'y1'}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:true,position:'bottom',labels:{color:'#bbc',font:{size:11}}}},
+        scales:{
+          x:{ticks:{color:'#778',font:{size:9}},grid:{color:'#2a2f45'}},
+          y:{ticks:{color:'#778'},grid:{color:'#2a2f45'}},
+          y1:{position:'right',ticks:{color:'#60a5fa'},grid:{display:false}}
+        }}
+    });
+  },100);
+}
+
+function seleccionarAño(año){
+  añoSeleccionado=año;
+  renderHistorialAnual();
+}
+
+// ── Comparar clientes ─────────────────────────────────────────────────
+function renderComparativa(){
+  const nomA=document.getElementById('cmp-a').value.trim().toUpperCase();
+  const nomB=document.getElementById('cmp-b').value.trim().toUpperCase();
+  const el=document.getElementById('cmp-contenido');
+
+  const cA=DATA.clientes.find(c=>c.nombre===nomA);
+  const cB=DATA.clientes.find(c=>c.nombre===nomB);
+
+  if(!cA&&!cB){el.innerHTML='';return;}
+  if(!cA||!cB){
+    el.innerHTML=`<div class="card" style="color:var(--text3);font-size:13px">Ingresá los dos clientes para comparar.</div>`;
+    return;
+  }
+
+  const compA=DATA.ventas.filter(v=>v.cliente===nomA);
+  const compB=DATA.ventas.filter(v=>v.cliente===nomB);
+  const catA={},catB={};
+  compA.forEach(v=>{catA[v.categoria]=(catA[v.categoria]||0)+1;});
+  compB.forEach(v=>{catB[v.categoria]=(catB[v.categoria]||0)+1;});
+
+  const todasCats=[...new Set([...Object.keys(catA),...Object.keys(catB)])].sort();
+  const catsEnComun=todasCats.filter(c=>catA[c]&&catB[c]);
+  const soloA=todasCats.filter(c=>catA[c]&&!catB[c]);
+  const soloB=todasCats.filter(c=>!catA[c]&&catB[c]);
+
+  function stat(label,vA,vB,higherIsBetter=true){
+    const winA=(higherIsBetter?vA>vB:vA<vB);
+    const winB=(higherIsBetter?vB>vA:vB<vA);
+    return `<div class="cmp-stat">
+      <span class="${winA?'cmp-win':''}">${vA}</span>
+      <span style="color:var(--text3);font-size:11px">${label}</span>
+      <span class="${winB?'cmp-win':''}">${vB}</span>
+    </div>`;
+  }
+
+  el.innerHTML=`
+    <div class="grid-2" style="margin-bottom:16px">
+      <div class="cmp-col">
+        <div class="cmp-nombre">${cA.nombre}</div>
+        <span class="badge badge-${esBadge(cA.estado)}">${cA.estado||'—'}</span>
+        ${stat('Productos',cA.totalProductos,cB.totalProductos)}
+        ${stat('Campañas sin comprar',cA.campañasSin,cB.campañasSin,false)}
+        ${stat('Categorías distintas',Object.keys(catA).length,Object.keys(catB).length)}
+        ${stat('Primera compra',fmtPeriodo(cA.primerPeriodo),fmtPeriodo(cB.primerPeriodo),false)}
+        ${stat('Última compra',fmtPeriodo(cA.ultimoPeriodo),fmtPeriodo(cB.ultimoPeriodo))}
+      </div>
+      <div class="cmp-col">
+        <div class="cmp-nombre">${cB.nombre}</div>
+        <span class="badge badge-${esBadge(cB.estado)}">${cB.estado||'—'}</span>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="card-sm">
+        <div class="card-title">En común (${catsEnComun.length})</div>
+        ${catsEnComun.length?catsEnComun.map(c=>`<span class="bi-tag">✓ ${c}</span>`).join(''):'<span style="color:var(--text3);font-size:12px">Ninguna</span>'}
+      </div>
+      <div class="card-sm">
+        <div class="card-title">Solo ${cA.nombre.split(' ')[0]}</div>
+        ${soloA.length?soloA.map(c=>`<span class="bi-tag" style="background:var(--green-bg);color:var(--green)">${c}</span>`).join(''):'<span style="color:var(--text3);font-size:12px">Ninguna</span>'}
+      </div>
+      <div class="card-sm">
+        <div class="card-title">Solo ${cB.nombre.split(' ')[0]}</div>
+        ${soloB.length?soloB.map(c=>`<span class="bi-tag" style="background:var(--blue-bg);color:var(--blue)">${c}</span>`).join(''):'<span style="color:var(--text3);font-size:12px">Ninguna</span>'}
+      </div>
+    </div>`;
+}
+
+// ── Alertas automáticas ───────────────────────────────────────────────
+function renderAlertas(){
+  const alertas=[];
+  const pa=periodoActual();
+
+  // 1. Clientes en riesgo (exactamente 2 campañas sin comprar)
+  const enRiesgo=DATA.clientes.filter(c=>c.campañasSin===2);
+  if(enRiesgo.length){
+    alertas.push({
+      tipo:'yellow',icono:'⚠️',
+      titulo:`${enRiesgo.length} clientes en riesgo de volverse inactivos`,
+      desc:`Llevan 2 campañas sin comprar. Si no compran en esta campaña pasarán a "Contactar".`,
+      accion:'riesgo',accionLabel:'Ver lista'
+    });
+  }
+
+  // 2. Clientes que pasaron de Contactar a Inactivo recientemente
+  const recienInactivos=DATA.clientes.filter(c=>c.campañasSin===6);
+  if(recienInactivos.length){
+    alertas.push({
+      tipo:'red',icono:'🔴',
+      titulo:`${recienInactivos.length} clientes acaban de volverse inactivos`,
+      desc:`Llevan exactamente 6 campañas sin comprar. Es el momento límite para intentar recuperarlos.`,
+      accion:'inactivos6',accionLabel:'Ver clientes'
+    });
+  }
+
+  // 3. Clientes activos con muchos productos (oportunidad)
+  const topActivos=DATA.clientes.filter(c=>c.estado&&c.estado.includes('Activo')&&c.totalProductos>50);
+  if(topActivos.length){
+    alertas.push({
+      tipo:'green',icono:'⭐',
+      titulo:`${topActivos.length} clientes VIP activos con más de 50 productos`,
+      desc:`Son tus mejores clientes. Asegurate de ofrecerles los lanzamientos prioritariamente.`,
+      accion:'vip',accionLabel:'Ver VIPs'
+    });
+  }
+
+  // 4. Sin ventas esta campaña
+  const conVentasEsta=new Set(DATA.ventas.filter(v=>v.periodo===pa).map(v=>v.cliente));
+  const sinVentasActivos=DATA.clientes.filter(c=>c.estado&&c.estado.includes('Activo')&&!conVentasEsta.has(c.nombre));
+  if(sinVentasActivos.length){
+    alertas.push({
+      tipo:'blue',icono:'📢',
+      titulo:`${sinVentasActivos.length} clientes activos aún no compraron esta campaña`,
+      desc:`Son clientes activos que todavía no registraron compras en la campaña ${DATA.config.campañaActual}/${DATA.config.añoActual}.`,
+      accion:'sinesta',accionLabel:'Ver lista'
+    });
+  }
+
+  // 5. Campaña con menos ventas que el promedio
+  const vpc={};
+  DATA.ventas.forEach(v=>{vpc[v.periodo]=(vpc[v.periodo]||0)+1;});
+  const periodos=Object.keys(vpc).map(Number).sort();
+  if(periodos.length>2){
+    const prom=Math.round(Object.values(vpc).reduce((a,b)=>a+b,0)/Object.values(vpc).length);
+    const ultPeriodo=periodos[periodos.length-1];
+    const ventasUlt=vpc[ultPeriodo]||0;
+    if(ventasUlt<prom*0.7){
+      alertas.push({
+        tipo:'yellow',icono:'📉',
+        titulo:`La campaña actual tiene menos ventas que el promedio`,
+        desc:`Promedio: ${prom} ventas/campaña. Campaña actual: ${ventasUlt} ventas.`,
+        accion:null,accionLabel:null
+      });
+    }
+  }
+
+  const colores={green:'var(--green-bg)',yellow:'var(--yellow-bg)',red:'var(--red-bg)',blue:'var(--blue-bg)'};
+  const textColores={green:'var(--green)',yellow:'var(--yellow)',red:'var(--red)',blue:'var(--blue)'};
+  const borderColores={green:'#1a5a2a',yellow:'#5a3a00',red:'#5a1a1a',blue:'#0a2a4a'};
+
+  window._alertasData={enRiesgo,recienInactivos,topActivos,sinVentasActivos};
+
+  document.getElementById('alertas-contenido').innerHTML=alertas.length?`
+    <div style="margin-bottom:16px;font-size:13px;color:var(--text2)">${alertas.length} alertas activas</div>
+    ${alertas.map(a=>`
+      <div class="alerta-card" style="border-color:${borderColores[a.tipo]};background:${colores[a.tipo]}22">
+        <div class="alerta-icon">${a.icono}</div>
+        <div style="flex:1">
+          <div class="alerta-titulo" style="color:${textColores[a.tipo]}">${a.titulo}</div>
+          <div class="alerta-desc">${a.desc}</div>
+        </div>
+        ${a.accion?`<div class="alerta-accion"><button class="btn btn-gray" style="font-size:11px;border-color:${borderColores[a.tipo]};color:${textColores[a.tipo]}" onclick="accionAlerta('${a.accion}')">${a.accionLabel}</button></div>`:''}
+      </div>`).join('')}`
+    :`<div class="card" style="text-align:center;padding:60px;color:var(--text3)">🎉 Sin alertas activas</div>`;
+}
+
+function accionAlerta(tipo){
+  let resultado=[],titulo='';
+  const d=window._alertasData||{};
+  if(tipo==='riesgo'){resultado=d.enRiesgo||[];titulo='En riesgo';}
+  else if(tipo==='inactivos6'){resultado=d.recienInactivos||[];titulo='Recién inactivos';}
+  else if(tipo==='vip'){resultado=d.topActivos||[];titulo='Clientes VIP';}
+  else if(tipo==='sinesta'){resultado=d.sinVentasActivos||[];titulo='Sin compras esta campaña';}
+
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn')[8].classList.add('active');
+  document.querySelectorAll('.screen').forEach(s=>s.style.display='none');
+  document.getElementById('screen-buscador-inteligente').style.display='block';
+  document.getElementById('bi-input').value=titulo;
+  mostrarResultadoBusqueda(resultado,titulo);
+}
+
 // ── Nav ───────────────────────────────────────────────────────────────
 function setScreen(name,btn){
   document.querySelectorAll('.screen').forEach(s=>s.style.display='none');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('screen-'+name).style.display='block';
   btn.classList.add('active');
+  if(name==='historial-anual') renderHistorialAnual();
+  if(name==='alertas') renderAlertas();
 }
 
 // ── Init ──────────────────────────────────────────────────────────────
