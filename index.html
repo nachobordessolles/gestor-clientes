@@ -406,19 +406,28 @@ async function cargarDatos() {
     }));
 
     DATA.clientes = raw.clientes.slice(1).filter(r => r[0]).map(r => {
-      const estadoRaw = String(r[5]||'').trim();
-      // Normalizar estado — puede venir como "Inactivo", "🔴 Inactivo", "Contactar", etc.
+      const estadoRaw = String(r[5]||'').trim().replace(/\s+/g,' ');
       let estado = '';
       if (estadoRaw.includes('Activo') && !estadoRaw.includes('Inactivo')) estado = '🟢 Activo';
       else if (estadoRaw.includes('Contactar')) estado = '🟡 Contactar';
       else if (estadoRaw.includes('Inactivo')) estado = '🔴 Inactivo';
       else estado = estadoRaw;
+
+      // campañasSin puede venir como fecha Excel — lo resolvemos desde el estado
+      let campañasSin = parseInt(r[4]);
+      if (campañasSin > 1000) {
+        // Es una fecha Excel mal interpretada — derivamos desde el estado
+        if (estado.includes('Activo')) campañasSin = 1;
+        else if (estado.includes('Contactar')) campañasSin = 4;
+        else campañasSin = 10;
+      }
+
       return {
         nombre: String(r[0]).trim(),
         primerPeriodo: parseInt(r[1]),
         ultimoPeriodo: parseInt(r[2]),
         totalProductos: parseInt(r[3]),
-        campañasSin: parseInt(r[4]),
+        campañasSin,
         estado
       };
     });
