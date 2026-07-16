@@ -383,7 +383,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyiTDpS8qRIRRpdAB7uexuNddP3mvq6HM2UnrOeGSJHj_VEEyh5qbJUXW578IjcRdZV/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqPOgyy729KX9Isa-wm-p84HH0XhKSRASGQsOFeGryj_sD64hpEUh-Bh0GI43i357P/exec';
 
 let DATA = { ventas: [], clientes: [], config: { añoActual: 2026, campañaActual: 10 } };
 let charts = {};
@@ -405,10 +405,23 @@ async function cargarDatos() {
       año: parseInt(r[3]), campaña: parseInt(r[4]), periodo: parseInt(r[5])
     }));
 
-    DATA.clientes = raw.clientes.slice(1).filter(r => r[0]).map(r => ({
-      nombre: String(r[0]).trim(), primerPeriodo: parseInt(r[1]), ultimoPeriodo: parseInt(r[2]),
-      totalProductos: parseInt(r[3]), campañasSin: parseInt(r[4]), estado: String(r[5]).trim()
-    }));
+    DATA.clientes = raw.clientes.slice(1).filter(r => r[0]).map(r => {
+      const estadoRaw = String(r[5]||'').trim();
+      // Normalizar estado — puede venir como "Inactivo", "🔴 Inactivo", "Contactar", etc.
+      let estado = '';
+      if (estadoRaw.includes('Activo') && !estadoRaw.includes('Inactivo')) estado = '🟢 Activo';
+      else if (estadoRaw.includes('Contactar')) estado = '🟡 Contactar';
+      else if (estadoRaw.includes('Inactivo')) estado = '🔴 Inactivo';
+      else estado = estadoRaw;
+      return {
+        nombre: String(r[0]).trim(),
+        primerPeriodo: parseInt(r[1]),
+        ultimoPeriodo: parseInt(r[2]),
+        totalProductos: parseInt(r[3]),
+        campañasSin: parseInt(r[4]),
+        estado
+      };
+    });
 
     DATA.config = { añoActual: parseInt(raw.config[1][0]), campañaActual: parseInt(raw.config[1][1]) };
     actualizarBadge();
